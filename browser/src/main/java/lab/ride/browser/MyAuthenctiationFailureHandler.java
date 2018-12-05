@@ -1,9 +1,9 @@
 package lab.ride.browser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lab.ride.browser.support.SimpleResponse;
 import lab.ride.security.core.properties.LoginType;
 import lab.ride.security.core.properties.SecurityProperties;
+import lab.ride.security.core.support.SimpleResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

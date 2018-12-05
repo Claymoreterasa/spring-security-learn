@@ -18,11 +18,6 @@ public class ValidateCodeController {
     @Autowired
     private ValidateCodeProcessorHolder validateCodeProcessorHolder;
 
-    @GetMapping("/code/a")
-    public String get(){
-        return "a";
-    }
-
     @GetMapping("/code/{type}")
     public void createImageCode(@PathVariable String type, HttpServletRequest request, HttpServletResponse response) throws Exception {
         validateCodeProcessorHolder.findValidateCodeProcessor(type).create(new ServletWebRequest(request, response));

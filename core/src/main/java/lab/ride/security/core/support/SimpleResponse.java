@@ -1,4 +1,4 @@
-package lab.ride.browser.support;
+package lab.ride.security.core.support;
 
 /**
  * @author cwz

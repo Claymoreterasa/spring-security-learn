@@ -1,12 +1,13 @@
 package lab.ride.security.core.validate;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * @author cwz
  * @date 2018/11/28
  */
-public class ValidateCode {
+public class ValidateCode implements Serializable {
 
     private String code;
 

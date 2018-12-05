@@ -12,6 +12,7 @@
     <module>app</module>
     <module>demo</module>
     <module>browser</module>
+      <module>authorize</module>
   </modules>
 
   <name>spring-security-learn</name>

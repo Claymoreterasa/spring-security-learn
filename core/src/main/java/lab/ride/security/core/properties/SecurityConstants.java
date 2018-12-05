@@ -47,6 +47,11 @@ public interface SecurityConstants {
      */
     public static final String DEFAULT_PARAMETER_NAME_MOBILE = "mobile";
 
+    public static final String DEFAULT_SESSION_INVALID_URL = "/session/invalid";
+
+    public static final String DEFAULT_PARAMETER_NAME_OPENID = "openId";
+
+    public static final String DEFAULT_PARAMETER_NAME_PROVIDERID = "providerID";
 }
 
 

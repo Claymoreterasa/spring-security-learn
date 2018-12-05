@@ -3,8 +3,6 @@ package lab.ride.security.core.validate;
 import lab.ride.security.core.properties.SecurityConstants;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.social.connect.web.HttpSessionSessionStrategy;
-import org.springframework.social.connect.web.SessionStrategy;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -17,14 +15,11 @@ import java.util.Map;
  */
 public abstract class AbstractValidateCodeProcessor<T extends ValidateCode> implements ValidateCodeProcessor {
 
-    private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
+    @Autowired
+    private ValidateCodeRepo validateCodeRepo;
 
     @Autowired
     private Map<String, ValidateCodeGenerator> validateCodeGenerators;
-
-    public SessionStrategy getSessionStrategy() {
-        return sessionStrategy;
-    }
 
     @Override
     public void create(ServletWebRequest request) throws Exception {
@@ -40,7 +35,9 @@ public abstract class AbstractValidateCodeProcessor<T extends ValidateCode> impl
     }
 
     private void save(ServletWebRequest request, T validateCode) {
-        sessionStrategy.setAttribute(request, SESSION_KEY_PREFIX + getProcessorType(request).toUpperCase(), validateCode);
+        ValidateCode savedCode = new ValidateCode(validateCode.getCode(), validateCode.getExpireTime());
+        ValidateCodeType codeType = getValidateCodeType();
+        validateCodeRepo.save(request, savedCode, codeType);
     }
 
     protected abstract void send(ServletWebRequest request, T validateCode) throws Exception;
@@ -57,37 +54,37 @@ public abstract class AbstractValidateCodeProcessor<T extends ValidateCode> impl
     @Override
     public void validate(ServletWebRequest request) {
 
-        ValidateCodeType processorType = getValidateCodeType();
+        ValidateCodeType codeType = getValidateCodeType();
         String sessionKey = getSessionKey();
 
-        T codeInSession = (T) sessionStrategy.getAttribute(request, sessionKey);
+        T code = (T)validateCodeRepo.get(request, codeType);
 
         String codeInRequest;
         try {
             codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(),
-                    processorType.getParamNameOnValidate());
+                    codeType.getParamNameOnValidate());
         } catch (ServletRequestBindingException e) {
             throw new ValidateCodeException("获取验证码的值失败");
         }
 
         if (StringUtils.isBlank(codeInRequest)) {
-            throw new ValidateCodeException(processorType + "验证码的值不能为空");
+            throw new ValidateCodeException(codeType + "验证码的值不能为空");
         }
 
-        if (codeInSession == null) {
-            throw new ValidateCodeException(processorType + "验证码不存在");
+        if (code == null) {
+            throw new ValidateCodeException(codeType + "验证码不存在");
         }
 
-        if (codeInSession.isExpried()) {
-            sessionStrategy.removeAttribute(request, sessionKey);
-            throw new ValidateCodeException(processorType + "验证码已过期");
+        if (code.isExpried()) {
+            validateCodeRepo.remove(request, codeType);
+            throw new ValidateCodeException(codeType + "验证码已过期");
         }
 
-        if (!StringUtils.equals(codeInSession.getCode(), codeInRequest)) {
-            throw new ValidateCodeException(processorType + "验证码不匹配");
+        if (!StringUtils.equals(code.getCode(), codeInRequest)) {
+            throw new ValidateCodeException(codeType + "验证码不匹配");
         }
 
-        sessionStrategy.removeAttribute(request, sessionKey);
+        validateCodeRepo.remove(request, codeType);
     }
 
     /**

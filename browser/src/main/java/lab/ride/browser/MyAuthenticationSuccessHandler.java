@@ -29,20 +29,23 @@ public class MyAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
     @Autowired
     private SecurityProperties myProperties;
 
+
     // Authentication  封装认证信息
     // 登录方式不同，Authentication不同
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws ServletException, IOException {
         logger.info("MyAuthenticationSuccessHandler login success!");
+
+
         if (LoginType.JSON.equals(myProperties.getLoginType())) {
             response.setContentType("application/json;charset=UTF-8");
             // 把authentication对象转成 json 格式 字符串 通过 response 以application/json;charset=UTF-8 格式写到响应里面去
             response.getWriter().write(objectMapper.writeValueAsString(authentication));
-        } else {
-            // 父类的方法 就是 跳转
+        }else{
             super.onAuthenticationSuccess(request, response, authentication);
         }
+
 
     }
 

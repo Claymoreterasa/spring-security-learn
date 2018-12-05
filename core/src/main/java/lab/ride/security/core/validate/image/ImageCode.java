@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
  * @date 2018/11/28
  */
 public class ImageCode extends ValidateCode {
+
     private BufferedImage image;
 
     public ImageCode(BufferedImage image, String code, int expireIn){

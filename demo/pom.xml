@@ -14,6 +14,16 @@
     <packaging>jar</packaging>
 
     <dependencies>
+        <!--<dependency>-->
+            <!--<groupId>lab.ride</groupId>-->
+            <!--<artifactId>app</artifactId>-->
+            <!--<version>${project.version}</version>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>lab.ride</groupId>
+            <artifactId>authorize</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>lab.ride</groupId>
             <artifactId>browser</artifactId>
@@ -55,6 +65,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.7.0</version>
         </dependency>
     </dependencies>
 
